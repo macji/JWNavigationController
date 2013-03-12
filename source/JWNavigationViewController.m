@@ -57,7 +57,7 @@
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveView:)];
     panGesture.maximumNumberOfTouches = 1;
     panGesture.minimumNumberOfTouches = 1;
-    panGesture.cancelsTouchesInView = NO;
+    panGesture.cancelsTouchesInView = YES;
     [self.view addGestureRecognizer:panGesture];
     [panGesture release];
 }
@@ -122,7 +122,7 @@
 
 - (void)pushViewController:(UIViewController *)viewController
                   animated:(BOOL)animated {
-    if (!_screenshotImages) {
+    if (!_screenshotImages || self.viewControllers.count == 0) {
         [super pushViewController:viewController animated:animated];
         return;
     }
@@ -159,10 +159,8 @@
 }
 
 - (NSArray *)popToRootViewControllerAnimated:(BOOL)animated {
-    [_screenshotImages removeObjectsInRange:NSMakeRange(1, _screenshotImages.count - 1)];
-    [self popViewControllerAnimated:animated];
-    
-    return self.viewControllers;
+    [_screenshotImages removeAllObjects];
+    return [super popToRootViewControllerAnimated:animated];
 }
 
 // TODO
@@ -174,7 +172,7 @@
 }
 
 - (void)moveView:(UIPanGestureRecognizer *)sender {
-    if (_screenshotImages.count == 0) return;
+    if (_screenshotImages.count < 1) return;
     
     if ([sender isKindOfClass:[UIPanGestureRecognizer class]]) {
         UIPanGestureRecognizer *pan = (UIPanGestureRecognizer *)sender;
