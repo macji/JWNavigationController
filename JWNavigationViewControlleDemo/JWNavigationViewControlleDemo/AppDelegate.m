@@ -20,12 +20,16 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{    
-    TestAViewController *testA = [[TestAViewController alloc] init];
-    JWNavigationViewController *nav = [[[JWNavigationViewController alloc] initWithRootViewController:testA] autorelease];
-    [testA release];
+{
+    
+    //should works in  a parentContrller 
+    TestAViewController *testA = [[[TestAViewController alloc] init] autorelease];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    UITabBarController *tabbarCtrl = [[UITabBarController alloc] init];
+    tabbarCtrl.viewControllers = [NSArray arrayWithObject:testA];
+    
+    JWNavigationViewController *nav = [[[JWNavigationViewController alloc] initWithRootViewController:tabbarCtrl] autorelease];
     self.window.rootViewController = nav;
     [self.window makeKeyAndVisible];
     

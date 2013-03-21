@@ -72,14 +72,21 @@
     [super dealloc];
 }
 
-- (UIImage *)getShotWithView:(UIView *)view {
-    if (UIGraphicsBeginImageContextWithOptions != NULL) {
-        UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, 0.0);
-    } else {
-        UIGraphicsBeginImageContext(view.frame.size);
+- (UIImage *)getParentShot {
+    UIViewController *ctrl = self;
+    while (ctrl.parentViewController!=nil) {
+        ctrl = ctrl.parentViewController;
     }
     
-    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIView *shotTarget = ctrl.view;
+    
+    if (UIGraphicsBeginImageContextWithOptions != NULL) {
+        UIGraphicsBeginImageContextWithOptions(shotTarget.frame.size, NO, 0.0);
+    } else {
+        UIGraphicsBeginImageContext(shotTarget.frame.size);
+    }
+    
+    [shotTarget.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
@@ -127,9 +134,9 @@
         return;
     }
     
-    UIImage *imageA = [self getShotWithView:self.view];
+    UIImage *imageA = [self getParentShot];
     [super pushViewController:viewController animated:NO];
-    [self showMaskViewsWithImageA:imageA imageB:[self getShotWithView:self.view]];
+    [self showMaskViewsWithImageA:imageA imageB:[self getParentShot]];
     [self maskViewConfigWithScale:1 left:self.view.frame.size.width alpha:0];
 
     // push view animate
@@ -143,7 +150,7 @@
 
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated {    
     [self showMaskViewsWithImageA:[_screenshotImages lastObject]
-                           imageB:[self getShotWithView:self.view]];
+                           imageB:[self getParentShot]];
     [self maskViewConfigWithScale:kTransformScale left:0 alpha:kOverlayViewAlpha];
     
     // push view animate
