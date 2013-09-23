@@ -185,7 +185,7 @@
         UIPanGestureRecognizer *pan = (UIPanGestureRecognizer *)sender;
         if (pan.state == UIGestureRecognizerStateBegan) {
             [self showMaskViewsWithImageA:[_screenshotImages lastObject]
-                                   imageB:[self getShotWithView:self.view]];
+                                   imageB:[self getParentShot]];
             [self maskViewConfigWithScale:kTransformScale left:0 alpha:kOverlayViewAlpha];
         }
         
